@@ -26,6 +26,8 @@ app.get("/ping", function (req, res) {
     return res.send("pong");
 });
 
+app.use("/", express.static("./client/build"));
+
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(
@@ -36,10 +38,10 @@ const httpsServer = https.createServer(
     app
 );
 
-httpServer.listen(port[0], () => {
+httpServer.listen(config.ports[0], () => {
     console.log("HTTP Server running on port " + config.ports[0]);
-  });
-  
-  httpsServer.listen(port[1], () => {
+});
+
+httpsServer.listen(config.ports[1], () => {
     console.log("HTTPS Server running on port " + config.ports[1]);
-  });
+});
