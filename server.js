@@ -9,7 +9,11 @@ const http = require("http");
 const app = express();
 
 const helmet = require('helmet')
-app.use(helmet())
+app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
