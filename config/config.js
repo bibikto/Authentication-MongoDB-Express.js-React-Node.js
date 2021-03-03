@@ -1,3 +1,3 @@
 module.exports = {
-    ports = [80,443]
+    ports : [80,443]
 }
