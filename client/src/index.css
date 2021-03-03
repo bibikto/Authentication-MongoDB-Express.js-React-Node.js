@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+* {
+  font-family: 'Nunito', sans-serif;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 1.707577374599787vh;
+  overflow-y: auto;
+  
+  height: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  
+}
+
+.htmldark {
+  background-color: #18191A;
+}
+
+.htmlwhite {
+  background-color: white;
+}
+body {
+  margin: 0;
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#root,.App {
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+}
