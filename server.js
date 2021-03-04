@@ -37,16 +37,16 @@ app.use("/", express.static("./client/build"));
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(
     {
-        key: fs.readFileSync("/etc/letsencrypt/live/www.xdxd.tech/privkey.pem"),
-        cert: fs.readFileSync("/etc/letsencrypt/live/www.xdxd.tech/fullchain.pem"),
+        key: fs.readFileSync(config.KEYFILE),
+        cert: fs.readFileSync(config.CERTFILE),
     },
     app
 );
 
-httpServer.listen(config.ports[0], () => {
-    console.log("HTTP Server running on port " + config.ports[0]);
+httpServer.listen(config.PORTS[0], () => {
+    console.log("HTTP Server running on port " + config.PORTS[0]);
 });
 
 httpsServer.listen(config.ports[1], () => {
-    console.log("HTTPS Server running on port " + config.ports[1]);
+    console.log("HTTPS Server running on port " + config.PORTS[1]);
 });
