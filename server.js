@@ -47,6 +47,6 @@ httpServer.listen(config.PORTS[0], () => {
     console.log("HTTP Server running on port " + config.PORTS[0]);
 });
 
-httpsServer.listen(config.ports[1], () => {
+httpsServer.listen(config.PORTS[1], () => {
     console.log("HTTPS Server running on port " + config.PORTS[1]);
 });
