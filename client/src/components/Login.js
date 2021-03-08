@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import {  Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip ,Divider} from '@material-ui/core'
-import { Visibility, VisibilityOff, AccountCircle } from '@material-ui/icons/';
+import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, Divider, } from '@material-ui/core'
+import { Visibility, VisibilityOff, AccountCircle, KeyboardCapslock } from '@material-ui/icons/';
+import Register from './Register'
 
 
 const useStyles = {
@@ -11,7 +12,7 @@ const useStyles = {
         flexDirection: 'column',
         padding: '15px',
         flex: 1,
-        
+
     },
     innerDiv: {
         width: '25vw',
@@ -40,9 +41,9 @@ const useStyles = {
         padding: '10px 20px',
         fontWeight: '700'
     },
-    signUp: {
-        marginTop: '20px',
-        alignSelf : 'flex-end'
+    capsLock: {
+        border: '1px solid red',
+        borderRadius: '5px'
     },
     '@media screen and (max-width: 600px)': {
         innerDiv: {
@@ -60,10 +61,13 @@ export class Login extends Component {
         this.state = {
             showPassword: false,
             password: '',
-            username: ''
+            username: '',
+            capsLockOn : false
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this)
+        this.handleChangeCapsLock = this.handleChangeCapsLock.bind(this)
+        
     }
 
     handleChange = (variable) => (event) => {
@@ -82,10 +86,21 @@ export class Login extends Component {
         event.preventDefault();
     };
 
+    handleChangeCapsLock = (event) => {
+        this.setState({
+            capsLockOn: event.getModifierState('CapsLock')
+        })
+    }
+
+    componentDidMount() {
+
+    }
+
+
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.rootPaper} >
+            <div className={classes.rootPaper} onMouseOver={this.handleChangeCapsLock}>
                 <div className={classes.innerDiv}>
                     <Avatar className={classes.avatar}></Avatar>
                     <form className={classes.formRoot}>
@@ -115,13 +130,17 @@ export class Login extends Component {
                                 type={this.state.showPassword ? 'text' : 'password'}
                                 value={this.state.handleChangePassword}
                                 onChange={this.handleChange('password')}
+                                onKeyUp={this.handleChangeCapsLock}
                                 endAdornment={
                                     <InputAdornment position="end">
+                                        {this.state.capsLockOn ? <Tooltip title="Caps Lock On" className={classes.capsLock}>
+                                            <KeyboardCapslock color='secondary'/>
+                                        </Tooltip> : ""}
                                         <Tooltip title={this.state.showPassword ? 'Hide Password' : 'Show Password'}>
                                             <IconButton
                                                 aria-label="toggle password visibility"
                                                 onClick={this.handleClickShowPassword}
-                                                onMouseDown={this.handleMouseDownPassword}
+                                                
                                             >
                                                 {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                                             </IconButton>
@@ -131,6 +150,7 @@ export class Login extends Component {
                                 required
                             />
                         </FormControl>
+                        
                         <Button
                             variant="contained"
                             color='secondary'
@@ -141,17 +161,10 @@ export class Login extends Component {
                             LOG IN
                     </Button>
                     </form>
-                    <Divider variant="inset" flexItem={true}/>
-                    <Button
-                        variant="contained"
-                        color='PRIMARY'
-                        size="small"
-                        className={[classes.button,classes.signUp]}
-                        type='submit'
-                    >
-                        CREATE NEW ACCOUNT
-                    </Button>
+                    <Divider variant="inset" flexItem={true} />
+                    <Register />
                 </div>
+
             </div>
         )
     }
