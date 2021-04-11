@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { withStyles, IconButton ,Tooltip } from '@material-ui/core'
+import { withStyles, IconButton ,Tooltip, Button } from '@material-ui/core'
 import { Brightness7, Brightness4 } from '@material-ui/icons/';
 import { connect } from "react-redux"
 import {
     themeSwitch
-} from "../redux/Theme/theme.actions"
+} from "../redux/theme/theme.actions"
 
-import Clock from './Clock'
+import Clock from './clock'
 
 const style = {
     rootPaper: {
@@ -46,7 +46,18 @@ export class TopBar extends Component {
                             {this.props.theme.palette.type === 'dark' ? <Brightness7 /> : <Brightness4 />}
                         </IconButton>
                     </Tooltip >
-                    <Clock></Clock>
+                    {this.props.user? <Button
+                            variant="contained"
+                            color='primary'
+                            size="small"
+                            className={classes.button}
+                            onClick={this.props.logOut}
+                        >
+                            LOG OUT
+                    </Button> :
+                    <span />
+                    }
+                    {/* <Clock></Clock> */}
                 </div>
             </div>
         )

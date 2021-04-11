@@ -5,23 +5,23 @@ import { createMuiTheme } from '@material-ui/core/styles'
 const INITIAL_STATE = {
   theme: createMuiTheme({
     palette: {
-      type: 'dark'
+      type: 'light'
     },
   })
 };
 
 
 
-const reducer = (state = INITIAL_STATE, action) => {
+const reducer = (state = INITIAL_STATE, action="SWITCH") => {
   switch (action.type) {
     case 'SWITCH': {
       let type = state.theme.palette.type === 'light' ? 'dark' : 'light'
-      if (document.querySelector('html').classList.contains('htmldark')) {
+      if (type == 'light') {
         document.querySelector('html').classList.remove('htmldark')
         document.querySelector('html').classList.add('htmllight')
       }
       else {
-        document.querySelector('html').classList.add('htmllight')
+        document.querySelector('html').classList.remove('htmllight')
         document.querySelector('html').classList.add('htmldark')
       }
       return {
@@ -33,7 +33,7 @@ const reducer = (state = INITIAL_STATE, action) => {
       };
     }
     default: {
-      document.querySelector('html').classList.add('htmldark')
+      document.querySelector('html').classList.add('htmllight')
       return state
     }
 

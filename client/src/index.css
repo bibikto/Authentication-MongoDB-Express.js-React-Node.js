@@ -1,13 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Nunito', sans-serif !important;
   box-sizing: border-box;
 }
 
 html {
   font-size: 1.707577374599787vh;
   overflow-y: auto;
-  
   height: 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -30,9 +29,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
 
 #root,.App {
   height: inherit;
