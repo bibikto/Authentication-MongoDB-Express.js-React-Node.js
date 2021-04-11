@@ -4,14 +4,14 @@ var nodemailer = require('nodemailer');
 const UserEmail = require("../models/user.email.model");
 
 var path = require('path');
-require('dotenv').config({path: path.join(__dirname, '../../')});
+require('dotenv').config();
 
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'no.reply.xdxd.tech@gmail.com',
-        pass: process.env.DB_CONNECTION_URL
+        pass: process.env.EMAIL_PASSWORD
     }
 });
 
