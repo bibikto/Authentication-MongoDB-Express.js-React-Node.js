@@ -74,6 +74,8 @@ app.get("/ping", function (req, res) {
 });
 
 app.use("/", express.static("./client/build"));
+app.use("/profile", express.static("./client/build"));
+app.use("/login", express.static("./client/build"));
 
 
 const httpServer = http.createServer(app);
