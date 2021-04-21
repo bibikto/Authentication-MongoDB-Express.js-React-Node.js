@@ -1,7 +1,7 @@
-# Authentication - Node.js DynamoDB React
+# Authentication - MongoDB Express.js React Node.js
 
 Node.js used for Backend.
-DynamoDB(AWS) for storing user data.
+DynamoDB for storing user data.
 React for frontend.
 
 ## Config Variables
