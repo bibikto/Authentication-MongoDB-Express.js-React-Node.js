@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { Paper, withStyles ,Typography } from '@material-ui/core';
 
@@ -23,10 +22,6 @@ class Profile extends Component {
   render() {
     const { user: currentUser } = this.props;
     console.log(currentUser)
-    if (!currentUser) {
-      return <Redirect to="/login" />;
-    }
-
     const { classes } = this.props
     return (
       <div className={classes.rootDiv}>
@@ -36,10 +31,6 @@ class Profile extends Component {
           </Typography>
           <Typography>
             <strong>Name:</strong> {currentUser.firstName} {currentUser.lastName}
-          </Typography>
-          <Typography>
-            <strong>Token:</strong> {currentUser.accessToken.substring(0, 20)} ...{" "}
-            {currentUser.accessToken.substr(currentUser.accessToken.length - 20)}
           </Typography>
           <Typography>
             <strong>Id:</strong> {currentUser.id}

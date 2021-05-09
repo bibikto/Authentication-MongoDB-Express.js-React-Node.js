@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withStyles, Dialog, Backdrop, DialogTitle, DialogContentText, DialogContent, Typography, DialogActions, Button } from '@material-ui/core'
+import { withStyles, Dialog, Backdrop, DialogTitle,  DialogContent, Typography, DialogActions, Button } from '@material-ui/core'
 import { ArrowForward } from '@material-ui/icons/';
 const useStyles = {
     body: {

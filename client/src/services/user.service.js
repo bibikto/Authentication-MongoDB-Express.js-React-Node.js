@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
+import { BASE_PATH } from "../config/api.config"
+let API_URL = `${BASE_PATH}api/auth/`;
 
-const API_URL = 'https://www.xdxd.tech/api/test/';
 
 class UserService {
   getPublicContent() {

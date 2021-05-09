@@ -76,15 +76,15 @@ export class Register extends Component {
     }
 
     handleChange = (variable) => (event) => {
-        if (variable == 'email') {
+        if (variable === 'email') {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if (event.target.value && !re.test(String(event.target.value).toLowerCase()))
                 this.setState({ emailError: true, emailErrorText: "Invalid Email Address!" })
             else
                 this.setState({ emailError: false, emailErrorText: "" })
         }
-        else if (variable == 'password') {
-            if ((event.target.value).length == 0)
+        else if (variable === 'password') {
+            if ((event.target.value).length === 0)
                 this.setState({ passwordError: false, passwordErrorText: "" })
             else {
                 const re_uc = /[A-Z]/
@@ -96,7 +96,7 @@ export class Register extends Component {
                     this.setState({ passwordError: false })
 
                 if (this.state.confirmPassword.length > 0) {
-                    if (event.target.value != this.state.confirmPassword)
+                    if (event.target.value !== this.state.confirmPassword)
                         this.setState({ confirmPasswordError: true, confirmPasswordErrorMessage: "Passwords do not match" })
                     else
                         this.setState({ confirmPasswordError: false, confirmPasswordErrorMessage: "" })
@@ -104,8 +104,8 @@ export class Register extends Component {
             }
 
         }
-        else if (variable == 'confirmPassword') {
-            if (event.target.value.length > 0 && event.target.value != this.state.password)
+        else if (variable === 'confirmPassword') {
+            if (event.target.value.length > 0 && event.target.value !== this.state.password)
                 this.setState({ confirmPasswordError: true, confirmPasswordErrorMessage: "Passwords do not match" })
             else
                 this.setState({ confirmPasswordError: false, confirmPasswordErrorMessage: "" })
@@ -115,7 +115,7 @@ export class Register extends Component {
         })
     };
 
-    handleClickShowPassword = () => {
+    handleClickShowPassword = async() => {
         this.setState({
             showPassword: !this.state.showPassword
         })
@@ -125,25 +125,25 @@ export class Register extends Component {
         event.preventDefault();
     };
 
-    handleChangeCapsLock = (event) => {
+    handleChangeCapsLock = async(event) => {
         this.setState({
             capsLockOn: event.getModifierState('CapsLock')
         })
     }
 
-    handleClose = () => {
+    handleClose = async() => {
         this.setState({
             modalOpen: false
         })
     }
 
-    registerClick = () => {
+    registerClick = async() => {
         this.setState({
             modalOpen: true
         })
     }
 
-    handleLogin(e) {
+    handleLogin = async(e) =>{
         e.preventDefault();
 
         this.setState({
@@ -152,7 +152,7 @@ export class Register extends Component {
 
         //this.form.validateAll();
 
-        const { dispatch, history } = this.props;
+        const { dispatch } = this.props;
         if (!this.state.emailError && !this.state.passwordError && !this.state.confirmPasswordError) {
             dispatch(register(this.state.email, this.state.password, this.state.confirmPassword,this.state.firstName,this.state.lastName))
                 .then(() => {
@@ -202,7 +202,6 @@ export class Register extends Component {
                 <Divider variant="inset" className={classes.divider} />
                 <Button
                     variant="contained"
-                    color='PRIMARY'
                     size="small"
                     className={classes.signUp}
                     type='submit'
@@ -262,7 +261,7 @@ export class Register extends Component {
 
                                     required
                                 />
-                                <FormHelperText margin="none" id="component-error-text" required>{this.state.emailErrorText}</FormHelperText>
+                                <FormHelperText  id="component-error-text" required>{this.state.emailErrorText}</FormHelperText>
                             </FormControl>
                             <div className={classes.gapCon}>
                                 <FormControl variant="filled" margin="normal" error={this.state.passwordError} fullWidth>
@@ -292,7 +291,7 @@ export class Register extends Component {
 
                                         required
                                     />
-                                    <FormHelperText margin="none" id="component-error-text" required>Use 8 or more characters with a mix of uppercase letters, lowercase letters & numbers</FormHelperText>
+                                    <FormHelperText  id="component-error-text" required>Use 8 or more characters with a mix of uppercase letters, lowercase letters & numbers</FormHelperText>
                                 </FormControl>
                                 <FormControl variant="filled" margin="normal" error={this.state.confirmPasswordError} fullWidth>
                                     <InputLabel htmlFor="filled-adornment-password">Confirm Password</InputLabel>
@@ -313,7 +312,7 @@ export class Register extends Component {
                                         }
                                         required
                                     />
-                                    <FormHelperText margin="none" id="component-error-text" required>{this.state.confirmPasswordErrorMessage}</FormHelperText>
+                                    <FormHelperText id="component-error-text" required>{this.state.confirmPasswordErrorMessage}</FormHelperText>
                                 </FormControl>
 
                             </div>

@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const API_URL = "https://www.xdxd.tech/api/auth/";
+import { BASE_PATH } from "../config/api.config"
+let API_URL = `${BASE_PATH}/api/auth/`;
 
 class AuthService {
     login(email, password) {
@@ -8,6 +8,7 @@ class AuthService {
             .post(API_URL + "signin", { email, password })
             .then((response) => {
                 if (response.data.accessToken) {
+                    console.log(response.data)
                     localStorage.setItem("user", JSON.stringify(response.data));
                 }
 

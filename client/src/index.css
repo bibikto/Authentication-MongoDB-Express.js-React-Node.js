@@ -5,26 +5,11 @@
 }
 
 html {
-  font-size: 1.707577374599787vh;
-  overflow-y: auto;
+  /* font-size: 1.707577374599787vh; */
   height: 100%;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-repeat: no-repeat;
-  
 }
 
-.htmldark {
-  background-color: #18191A;
-}
-
-.htmlwhite {
-  background-color: white;
-}
 body {
-  margin: 0;
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,4 +19,8 @@ body {
   height: inherit;
   display: flex;
   flex-direction: column;
+}
+
+.fullHeight {
+  height: 100%;
 }

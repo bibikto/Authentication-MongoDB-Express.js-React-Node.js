@@ -1,20 +1,17 @@
 import React, { Component } from 'react'
-import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, FormHelperText } from '@material-ui/core'
+import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, FormHelperText, Grid, Fade } from '@material-ui/core'
 import { Visibility, VisibilityOff, AccountCircle, KeyboardCapslock } from '@material-ui/icons/';
 import Register from './register'
 import { connect } from "react-redux";
 import { login } from "../actions/auth";
-import { Redirect } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import EmailNotVerified from "./emailNotVerified"
+import ReactIsCapsLockActive from '@matsun/reactiscapslockactive'
+
 
 const useStyles = {
     rootPaper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
         padding: '15px',
         flex: 1,
 
@@ -78,12 +75,11 @@ export class Login extends Component {
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this)
-        this.handleChangeCapsLock = this.handleChangeCapsLock.bind(this)
         this.handleLogin = this.handleLogin.bind(this)
     }
 
     handleChange = (variable) => (event) => {
-        if (variable == 'email') {
+        if (variable === 'email') {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if (event.target.value && !re.test(String(event.target.value).toLowerCase()))
                 this.setState({ emailError: true, emailErrorText: "Invalid Email Address!" })
@@ -91,7 +87,7 @@ export class Login extends Component {
                 this.setState({ emailError: false, emailErrorText: "" })
         }
         else {
-            if ((event.target.value).length == 0)
+            if ((event.target.value).length === 0)
                 this.setState({ passwordError: false, passwordErrorText: "" })
             else {
                 const re_uc = /[A-Z]/
@@ -108,43 +104,32 @@ export class Login extends Component {
         })
     };
 
-    handleClickShowPassword = () => {
+    handleClickShowPassword = async () => {
         this.setState({
             showPassword: !this.state.showPassword
         })
     };
 
-    handleMouseDownPassword = (event) => {
+    handleMouseDownPassword = async (event) => {
         event.preventDefault();
     };
 
-    handleChangeCapsLock = (event) => {
-        this.setState({
-            capsLockOn: event.getModifierState('CapsLock')
-        })
-    }
 
-    componentDidMount() {
 
-    }
-
-    handleLogin(e) {
+    handleLogin = async (e) => {
         e.preventDefault();
 
         this.setState({
             loading: true,
         });
 
-        //this.form.validateAll();
 
         const { dispatch, history } = this.props;
 
-        //if (this.checkBtn.context._errors.length === 0) {
         if (!this.state.emailError && !this.state.passwordError) {
             dispatch(login(this.state.email, this.state.password))
                 .then(() => {
                     history.push("/profile");
-                    window.location.reload();
                     this.setState({
                         loading: false,
                         messageType: "success",
@@ -157,19 +142,15 @@ export class Login extends Component {
                         messageType: "error",
                         open: true
                     });
-                    if (this.props.message == "Email not verified!"){
+                    if (this.props.message === "Email not verified!") {
                         this.setState({
                             emailNotVerified: true,
-                            
+
                         });
                     }
                 });
         }
-        // } else {
-        //   this.setState({
-        //     loading: false,
-        //   });
-        // }
+
     }
 
     handleCloseSnackBar = (event, reason) => {
@@ -182,104 +163,109 @@ export class Login extends Component {
 
 
     render() {
+        console.log(this.props)
         const { classes } = this.props;
-        const { isLoggedIn, message } = this.props;
-
-        if (isLoggedIn) {
-            return <Redirect to="/profile" />;
-        }
+        const { message } = this.props;
 
         return (
-            <div className={classes.rootPaper} onMouseOver={this.handleChangeCapsLock}>
-                {this.state.emailNotVerified && <EmailNotVerified email={this.state.email} emailNotVerified={this.state.emailNotVerified} login={this.handleLogin}/> }
-                <div className={classes.innerDiv}>
-                    <Avatar className={classes.avatar}></Avatar>
-                    <form
-                        className={classes.formRoot}
-                        onSubmit={this.handleLogin}
-                        ref={(input) => {this.formLogin = input}}
-                    >
-                        
-                        <FormControl variant="filled" margin="normal" error={this.state.emailError} fullWidth>
-                            <InputLabel htmlFor="filled-adornment-password">Email</InputLabel>
-                            <FilledInput
-                                id="filled-adornment-username"
-                                type='email'
-                                value={this.state.email}
-                                onChange={this.handleChange('email')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton >
-                                            <AccountCircle />
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                autoFocus={true}
-                                required
-                            />
-                            <FormHelperText margin="none" id="component-error-text" required>{this.state.emailErrorText}</FormHelperText>
-                        </FormControl>
-
-                        <FormControl variant="filled" margin="normal" error={this.state.passwordError} fullWidth>
-                            <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-                            <FilledInput
-                                id="filled-adornment-password"
-                                type={this.state.showPassword ? 'text' : 'password'}
-                                value={this.state.password}
-                                onChange={this.handleChange('password')}
-                                onKeyUp={this.handleChangeCapsLock}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        {this.state.capsLockOn ? <Tooltip title="Caps Lock On" className={classes.capsLock}>
-                                            <KeyboardCapslock color='secondary' />
-                                        </Tooltip> : ""}
-                                        <Tooltip title={this.state.showPassword ? 'Hide Password' : 'Show Password'}>
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={this.handleClickShowPassword}
-
-                                            >
-                                                {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </Tooltip>
-                                    </InputAdornment>
-                                }
-
-                                required
-                            />
-                            <FormHelperText margin="none" id="component-error-text" required>{this.state.passwordErrorText}</FormHelperText>
-                        </FormControl>
-
-                        <Button
-                            variant="contained"
-                            color='secondary'
-                            size="large"
-                            className={classes.button}
-                            type='submit'
+            <Fade in={this.props.location.pathname === '/login'}>
+                <Grid
+                    container
+                    justify="center"
+                    alignItems='center'
+                    wrap='nowrap'
+                    direction='column'
+                    className={classes.rootPaper} >
+                    {this.state.emailNotVerified && <EmailNotVerified email={this.state.email} emailNotVerified={this.state.emailNotVerified} login={this.handleLogin} />}
+                    <div className={classes.innerDiv}>
+                        <Avatar className={classes.avatar}></Avatar>
+                        <form
+                            className={classes.formRoot}
+                            onSubmit={this.handleLogin}
+                            ref={(input) => { this.formLogin = input }}
                         >
-                            LOG IN
+
+                            <FormControl variant="filled" margin="normal" error={this.state.emailError} fullWidth>
+                                <InputLabel htmlFor="filled-adornment-password">Email</InputLabel>
+                                <FilledInput
+                                    id="filled-adornment-username"
+                                    type='email'
+                                    value={this.state.email}
+                                    onChange={this.handleChange('email')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton >
+                                                <AccountCircle />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    autoFocus={true}
+                                    required
+                                />
+                                <FormHelperText id="component-error-text" required>{this.state.emailErrorText}</FormHelperText>
+                            </FormControl>
+
+                            <FormControl variant="filled" margin="normal" error={this.state.passwordError} fullWidth>
+                                <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+                                <FilledInput
+                                    id="filled-adornment-password"
+                                    type={this.state.showPassword ? 'text' : 'password'}
+                                    value={this.state.password}
+                                    onChange={this.handleChange('password')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <ReactIsCapsLockActive>
+                                                {active =>
+                                                    active && <Tooltip title="Caps Lock On" className={classes.capsLock}>
+                                                        <KeyboardCapslock color='secondary' />
+                                                    </Tooltip>}
+                                            </ReactIsCapsLockActive>
+                                            <Tooltip title={this.state.showPassword ? 'Hide Password' : 'Show Password'}>
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={this.handleClickShowPassword}
+
+                                                >
+                                                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </Tooltip>
+                                        </InputAdornment>
+                                    }
+
+                                    required
+                                />
+                                <FormHelperText id="component-error-text" required>{this.state.passwordErrorText}</FormHelperText>
+                            </FormControl>
+
+                            <Button
+                                variant="contained"
+                                color='secondary'
+                                size="large"
+                                className={classes.button}
+                                type='submit'
+                            >
+                                LOG IN
                     </Button>
-                    </form>
-                    <Register />
-                </div>
-                <Snackbar anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }} open={this.state.open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
-                    <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={this.state.messageType}>
-                        {message}
-                    </MuiAlert>
-                </Snackbar>
-            </div>
+                        </form>
+                        <Register />
+                    </div>
+                    <Snackbar anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }} open={this.state.open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
+                        <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={this.state.messageType}>
+                            {message}
+                        </MuiAlert>
+                    </Snackbar>
+                </Grid>
+            </Fade>
         )
     }
 }
 
 function mapStateToProps(state) {
-    const { isLoggedIn } = state.auth;
     const { message } = state.message;
     return {
-        isLoggedIn,
         message
     };
 }
