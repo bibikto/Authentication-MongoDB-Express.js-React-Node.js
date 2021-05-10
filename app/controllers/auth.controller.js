@@ -13,7 +13,11 @@ exports.signup = async (req, res) => {
 
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(500).send({
+        message: {
+          error: "Internal server error"
+        }
+      });
       return;
     }
     const user = new User({
@@ -25,7 +29,11 @@ exports.signup = async (req, res) => {
     });
     user.save((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(500).send({
+          message: {
+            error: "Internal server error"
+          }
+        });
         return;
       }
       req.body.roles = ["user"]
@@ -36,7 +44,11 @@ exports.signup = async (req, res) => {
           },
           (err, roles) => {
             if (err) {
-              res.status(500).send({ message: err });
+              res.status(500).send({
+                message: {
+                  error: "Internal server error"
+                }
+              });
               return;
             }
 
@@ -46,26 +58,44 @@ exports.signup = async (req, res) => {
                 res.status(500).send({ message: err });
                 return;
               }
-              emailHelper.genAddUrlToDb(req.body.firstName,req.body.email)
-              res.send({ message: "User was registered successfully! Verification Email Sent!" });
+              emailHelper.genAddUrlToDb(req.body.firstName, req.body.email)
+              res.send({
+                message: {
+                  success: "User was registered successfully!",
+                  info: " Verification Email Sent!"
+                }
+              });
             });
           }
         );
       } else {
         Role.findOne({ name: "user" }, (err, role) => {
           if (err) {
-            res.status(500).send({ message: err });
+            res.status(500).send({
+              message: {
+                error: "Internal server error"
+              }
+            });
             return;
           }
 
           user.roles = [role._id];
           user.save(err => {
             if (err) {
-              res.status(500).send({ message: err });
+              res.status(500).send({
+                message: {
+                  error: "Internal server error"
+                }
+              });
               return;
             }
-            emailHelper.genAddUrlToDb(req.body.firstName,req.body.email)
-            res.send({ message: "User was registered successfully! Verification Email Sent!" });
+            emailHelper.genAddUrlToDb(req.body.firstName, req.body.email)
+            res.send({
+              message: {
+                success: "User was registered successfully!",
+                info: " Verification Email Sent!"
+              }
+            });
           });
         });
       }
@@ -83,31 +113,47 @@ exports.signin = async (req, res) => {
     .populate("roles", "-__v")
     .exec((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(500).send({
+          message: {
+            error: "Internal server error"
+          }
+        });
         return;
       }
 
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({
+          message: {
+            error: "User Not found."
+          }
+        });
       }
 
       bcrypt.compare(req.body.password, user.password, function (err, result) {
         if (err) {
-          res.status(500).send({ message: err });
+          res.status(500).send({
+            message: {
+              error: "Internal server error"
+            }
+          });
           return;
         }
 
         if (!result) {
           return res.status(401).send({
             accessToken: null,
-            message: "Invalid Password!"
+            message: {
+              error: "Invalid Password!"
+            }
           });
         }
 
-        if(!user.emailVerified){
+        if (!user.emailVerified) {
           return res.status(401).send({
             accessToken: null,
-            message: "Email not verified!"
+            message: {
+              info: "Email not verified!"
+            }
           });
         }
 

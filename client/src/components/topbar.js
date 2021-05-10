@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { withStyles, IconButton, Tooltip, Button, Grid, Slide, Icon, AppBar, Toolbar, Zoom } from '@material-ui/core'
-import { Brightness7, Brightness4, ArrowBack, HomeRounded, PersonRounded } from '@material-ui/icons/';
+import { Brightness7, Brightness4, ArrowBack, HomeRounded, PersonRounded, AccountCircleRounded } from '@material-ui/icons/';
 import { connect } from "react-redux"
-import { logout } from "../actions/auth";
 import { withRouter } from "react-router";
+import UserMenu from './TopBar/userMenu'
 import XDButton from '../assets/XDButton'
 import {
     themeSwitch
@@ -36,9 +36,9 @@ export class TopBar extends Component {
             interval: '',
             currentPath: this.props.location.pathname,
             prevPath: null,
-            homeIcon: 'default'
+            homeIcon: 'default',
+            userMenuOpen: false
         }
-
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -50,8 +50,7 @@ export class TopBar extends Component {
     }
 
     render() {
-        const { dispatch, history } = this.props;
-        const { classes } = this.props
+        const { dispatch, history ,classes} = this.props;
 
         return (
             <AppBar color="transparent">
@@ -107,19 +106,8 @@ export class TopBar extends Component {
                                 </IconButton>
                             </Tooltip >
 
-                            <Zoom in={this.props.loggedIn} mountOnEnter unmountOnExit>
-
-                                <Button
-                                    variant="outlined"
-                                    color='primary'
-                                    size="small"
-                                    className={classes.button}
-                                    onClick={() => { dispatch(logout()) }}
-
-                                >
-                                    LOG OUT
-                        </Button>
-                            </Zoom>
+                            
+                            <UserMenu loggedIn={this.props.loggedIn} dispatch={dispatch} />
 
                             <Zoom in={this.state.currentPath !== "/login" && !this.props.loggedIn} mountOnEnter unmountOnExit>
                                 <Button

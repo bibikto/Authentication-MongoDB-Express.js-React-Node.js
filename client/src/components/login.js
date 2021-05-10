@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, FormHelperText, Grid, Fade } from '@material-ui/core'
+import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, FormHelperText, Grid, Fade, Zoom } from '@material-ui/core'
 import { Visibility, VisibilityOff, AccountCircle, KeyboardCapslock } from '@material-ui/icons/';
 import Register from './register'
 import { connect } from "react-redux";
 import { login } from "../actions/auth";
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Alert } from '@material-ui/lab';
+
 import EmailNotVerified from "./emailNotVerified"
 import ReactIsCapsLockActive from '@matsun/reactiscapslockactive'
 
@@ -46,6 +46,9 @@ const useStyles = {
         border: '1px solid red',
         borderRadius: '5px'
     },
+    alert: {
+        margin: '5px 0px'
+    },
     '@media screen and (max-width: 600px)': {
         innerDiv: {
             width: '100%'
@@ -69,8 +72,6 @@ export class Login extends Component {
             open: false,
             emailError: false,
             emailErrorText: "",
-            passwordError: false,
-            passwordErrorText: "",
             emailNotVerified: false
         }
         this.handleChange = this.handleChange.bind(this)
@@ -85,19 +86,6 @@ export class Login extends Component {
                 this.setState({ emailError: true, emailErrorText: "Invalid Email Address!" })
             else
                 this.setState({ emailError: false, emailErrorText: "" })
-        }
-        else {
-            if ((event.target.value).length === 0)
-                this.setState({ passwordError: false, passwordErrorText: "" })
-            else {
-                const re_uc = /[A-Z]/
-                const re_lc = /[a-z]/
-                const re_nm = /[0-9]/
-                if (!(re_uc.test(event.target.value) && re_lc.test(event.target.value) && re_nm.test(event.target.value)) || ((event.target.value).length < 8 && (event.target.value).length > 0))
-                    this.setState({ passwordError: true, passwordErrorText: "Password contains 8 or more characters with a mix of uppercase letters, lowercase letters & numbers" })
-                else
-                    this.setState({ passwordError: false, passwordErrorText: "" })
-            }
         }
         this.setState({
             [variable]: event.target.value
@@ -139,7 +127,6 @@ export class Login extends Component {
                 .catch(() => {
                     this.setState({
                         loading: false,
-                        messageType: "error",
                         open: true
                     });
                     if (this.props.message === "Email not verified!") {
@@ -163,12 +150,11 @@ export class Login extends Component {
 
 
     render() {
-        console.log(this.props)
         const { classes } = this.props;
         const { message } = this.props;
-
+        console.log(message)
         return (
-            <Fade in={this.props.location.pathname === '/login'}>
+            <Fade in={true}>
                 <Grid
                     container
                     justify="center"
@@ -234,8 +220,12 @@ export class Login extends Component {
 
                                     required
                                 />
-                                <FormHelperText id="component-error-text" required>{this.state.passwordErrorText}</FormHelperText>
                             </FormControl>
+                            {Object.keys(message).map((item, index) => {
+                                return (<Zoom in={this.state.open} mountOnEnter unmountOnExit>
+                                    <Alert className={classes.alert} severity={item}>{message[item]}</Alert>
+                                </Zoom>)
+                            })}
 
                             <Button
                                 variant="contained"
@@ -249,14 +239,17 @@ export class Login extends Component {
                         </form>
                         <Register />
                     </div>
-                    <Snackbar anchorOrigin={{
+                    {/* <Snackbar anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
                     }} open={this.state.open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
                         <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={this.state.messageType}>
                             {message}
                         </MuiAlert>
-                    </Snackbar>
+                    </Snackbar> */}
+
+
+
                 </Grid>
             </Fade>
         )

@@ -25,7 +25,7 @@
   },
   "scripts": {
     "start dev": "nodemon server.js",
-    "start prod": "sudo pm2 server.js"
+    "start prod": "pm2 start server.js"
   },
   "keywords": [
     "Node",

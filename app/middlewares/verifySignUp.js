@@ -3,22 +3,28 @@ const ROLES = db.ROLES;
 const User = db.user;
 
 checkEmail = async (req, res, next) => {
-    // Email
-    User.findOne({
-      email: req.body.email
-    }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
+  // Email
+  User.findOne({
+    email: req.body.email
+  }).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: {
+        error: "Internal server error"
+      } });
+      return;
+    }
 
-      if (user) {
-        res.status(400).send({ message: "Failed! Email is already in use!" });
-        return;
-      }
+    if (user) {
+      res.status(400).send({
+        message: {
+          error: "Failed! Email is already in use"
+        }
+      });
+      return;
+    }
 
-      next();
-    });
+    next();
+  });
 };
 
 // checkRolesExisted = (req, res, next) => {
@@ -38,7 +44,7 @@ checkEmail = async (req, res, next) => {
 
 const verifySignUp = {
   checkEmail,
-  
+
 };
 
 module.exports = verifySignUp;

@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { withStyles, Dialog, Backdrop, DialogTitle, Button, Divider, DialogContent, FilledInput, DialogActions, InputLabel, FormControl, InputAdornment, Tooltip, IconButton, FormHelperText } from '@material-ui/core'
+import { withStyles, Dialog, Backdrop, DialogTitle, Button, Divider, DialogContent, FilledInput, DialogActions, InputLabel, FormControl, InputAdornment, Tooltip, IconButton, FormHelperText ,Zoom} from '@material-ui/core'
 import { Visibility, VisibilityOff, KeyboardCapslock } from '@material-ui/icons/';
 import { connect } from "react-redux";
 import { register } from "../actions/auth";
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Alert } from '@material-ui/lab';
 
 
 const useStyles = {
@@ -190,14 +189,7 @@ export class Register extends Component {
         const { classes } = this.props
         return (
             <div>
-                <Snackbar anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }} open={this.state.open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
-                    <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={this.state.messageType}>
-                        {this.props.message}
-                    </MuiAlert>
-                </Snackbar>
+                
 
                 <Divider variant="inset" className={classes.divider} />
                 <Button
@@ -316,6 +308,11 @@ export class Register extends Component {
                                 </FormControl>
 
                             </div>
+                            {Object.keys(this.props.message).map((item, index) => {
+                                return (<Zoom in={this.state.open} mountOnEnter unmountOnExit>
+                                    <Alert className={classes.alert} variant="outlined" severity={item}>{this.props.message[item]}</Alert>
+                                </Zoom>)
+                            })}
                             <Button
                                 variant="contained"
                                 color='secondary'
