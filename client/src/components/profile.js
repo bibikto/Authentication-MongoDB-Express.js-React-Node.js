@@ -21,7 +21,6 @@ class Profile extends Component {
 
   render() {
     const { user: currentUser } = this.props;
-    console.log(currentUser)
     const { classes } = this.props
     return (
       <div className={classes.rootDiv}>

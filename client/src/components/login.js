@@ -152,7 +152,6 @@ export class Login extends Component {
     render() {
         const { classes } = this.props;
         const { message } = this.props;
-        console.log(message)
         return (
             <Fade in={true}>
                 <Grid
