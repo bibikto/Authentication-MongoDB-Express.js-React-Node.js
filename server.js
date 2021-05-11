@@ -49,9 +49,8 @@ db.mongoose
         process.exit();
     });
 
-/*
-const https = require("https");
-https.globalAgent.keepAlive = true;
+
+
 
 const httpServer = http.createServer(app);
 
@@ -59,8 +58,9 @@ const httpServer = http.createServer(app);
 httpServer.listen(config.PORTS[0], () => {
     console.log("HTTP Server running on port " + config.PORTS[0]);
 });
-
-
+/*
+const https = require("https");
+https.globalAgent.keepAlive = true;
 if (process.env.NODE_ENV == "production") {
     const httpsServer = https.createServer(
         {
