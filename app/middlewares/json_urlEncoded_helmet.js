@@ -2,7 +2,7 @@ require('dotenv').config();
 const helmet = require('helmet')
 
 module.exports = async(app,express) =>{
-    app.use("trust proxy","loopback")
+    app.set("trust proxy","loopback")
 
     app.use(express.json());
 
