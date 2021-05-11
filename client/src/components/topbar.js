@@ -109,7 +109,7 @@ export class TopBar extends Component {
                             
                             <UserMenu loggedIn={this.props.loggedIn} dispatch={dispatch} />
 
-                            <Zoom in={this.state.currentPath !== "/login" && !this.props.loggedIn} mountOnEnter unmountOnExit>
+                            <Zoom in={!this.state.currentPath !== "/login" && !this.props.loggedIn} mountOnEnter unmountOnExit>
                                 <Button
                                     variant="outlined"
                                     color='secondary'

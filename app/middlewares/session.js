@@ -20,10 +20,4 @@ module.exports = async (app, connection) => {
     })
   );
 
-  app.use(async (req, res, next) => {
-    if (process.env.NODE_ENV == "production" && !req.secure)
-      return res.redirect("https://" + req.headers.host + req.url);
-
-    next();
-  });
 };

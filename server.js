@@ -6,9 +6,7 @@ require('dotenv').config();
 
 
 const http = require("http");
-const https = require("https");
 http.globalAgent.keepAlive = true;
-https.globalAgent.keepAlive = true;
 
 const db = require("./app/models");
 const Role = db.role;
@@ -18,8 +16,7 @@ const app = express();
 /*
     MIDDLEWARES
 */
-//CORS
-require('./app/middlewares/cors')(app);
+
 //JSON URLENCODING HELMET
 require('./app/middlewares/json_urlEncoded_helmet')(app, express); 
 /*
@@ -40,7 +37,7 @@ db.mongoose
             ROUTES & MIDDLEWARES THAT NEED TO COMMUNICATE WITH DB
         */
         //SESSION AND HTTPS REDIRECT MIDDLEWARE
-        require('./app/middlewares/session_redirect')(app, connection);
+        require('./app/middlewares/session')(app, connection);
 
         // ROUTES
         require('./app/routes/auth.routes')(app);
@@ -52,10 +49,9 @@ db.mongoose
         process.exit();
     });
 
-
-//CLIENT ROUTES
-require('./app/routes/client.routes')(app, express);
-
+/*
+const https = require("https");
+https.globalAgent.keepAlive = true;
 
 const httpServer = http.createServer(app);
 
@@ -63,6 +59,7 @@ const httpServer = http.createServer(app);
 httpServer.listen(config.PORTS[0], () => {
     console.log("HTTP Server running on port " + config.PORTS[0]);
 });
+
 
 if (process.env.NODE_ENV == "production") {
     const httpsServer = https.createServer(
@@ -77,3 +74,4 @@ if (process.env.NODE_ENV == "production") {
         console.log("HTTPS Server running on port " + config.PORTS[1]);
     });
 }
+*/
