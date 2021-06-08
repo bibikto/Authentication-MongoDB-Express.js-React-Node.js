@@ -58,20 +58,3 @@ const httpServer = http.createServer(app);
 httpServer.listen(config.PORTS[0], () => {
     console.log("HTTP Server running on port " + config.PORTS[0]);
 });
-/*
-const https = require("https");
-https.globalAgent.keepAlive = true;
-if (process.env.NODE_ENV == "production") {
-    const httpsServer = https.createServer(
-        {
-            key: fs.readFileSync(config.KEYFILE),
-            cert: fs.readFileSync(config.CERTFILE),
-        },
-        app
-    );
-
-    httpsServer.listen(config.PORTS[1], () => {
-        console.log("HTTPS Server running on port " + config.PORTS[1]);
-    });
-}
-*/

@@ -129,7 +129,7 @@ export class Login extends Component {
                         loading: false,
                         open: true
                     });
-                    if (this.props.message === "Email not verified!") {
+                    if (this.props.message.info === "Email not verified!") {
                         this.setState({
                             emailNotVerified: true,
 

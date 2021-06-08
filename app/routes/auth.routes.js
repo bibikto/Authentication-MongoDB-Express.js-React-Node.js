@@ -14,13 +14,15 @@ module.exports = async(app) => {
     "/api/auth/signup",
     [
       verifySignUp.checkEmail,
-      verifyInput.nullEmailPasswordCheck,
-      verifyInput.checkSignUpInput
+      verifyInput.verifyMissingEmptyParams,
+      verifyInput.verifySignUpParams,
+      verifyInput.validateEmail,
+      verifyInput.validatePassword
     ],
     controller.signup
   );
 
-  app.post("/api/auth/signin",[verifyInput.nullEmailPasswordCheck], controller.signin);
+  app.post("/api/auth/signin",[verifyInput.verifyMissingEmptyParams,verifyInput.validateEmail], controller.signin);
 
   app.get("/api/verify/email/:emailVerifyString",verifyEmail.verifyAccountEmail)
 };
