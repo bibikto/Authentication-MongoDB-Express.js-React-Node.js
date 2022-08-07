@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import { withStyles, Paper } from '@material-ui/core'
+import { Paper } from '@mui/material';
+
+import withStyles from '@mui/styles/withStyles';
 
 const style = {
     

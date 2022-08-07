@@ -1,5 +1,6 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 module.exports ={
-    BASE_PATH : process.env.NODE_ENV === "production" ? "" : "http://localhost:8080"
+    BASE_PATH :  "http://localhost:8080"
+    // process.env.NODE_ENV === "production" ? "" :
 }

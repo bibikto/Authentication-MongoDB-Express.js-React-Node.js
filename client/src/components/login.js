@@ -1,16 +1,18 @@
-import React, { Component } from 'react'
-import { Avatar, withStyles, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Button, Tooltip, FormHelperText, Grid, Fade, Zoom } from '@material-ui/core'
-import { Visibility, VisibilityOff, AccountCircle, KeyboardCapslock } from '@material-ui/icons/';
-import Register from './register'
-import { connect } from "react-redux";
+import { AccountCircle, KeyboardCapslock, Visibility, VisibilityOff } from '@mui/icons-material/';
+import { Avatar, Button, Fade, FilledInput, FormControl, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, Alert, FormControlLabel, FormGroup, Checkbox, Zoom, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles/';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import ReactIsCapsLockActive from '@matsun/reactiscapslockactive';
+import { styled } from '@mui/system'
+
+//Custom Component Import
+import Register from './Register';
 import { login } from "../actions/auth";
-import { Alert } from '@material-ui/lab';
+import EmailNotVerified from "./emailNotVerified";
 
-import EmailNotVerified from "./emailNotVerified"
-import ReactIsCapsLockActive from '@matsun/reactiscapslockactive'
-
-
-const useStyles = {
+const useStyles = makeStyles((theme) => ({
     rootPaper: {
         padding: '15px',
         flex: 1,
@@ -57,210 +59,202 @@ const useStyles = {
             width: '100%'
         },
     }
-};
+}));
 
-export class Login extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            showPassword: false,
-            password: '',
-            email: '',
-            capsLockOn: false,
-            loading: false,
-            messageType: "",
-            open: false,
-            emailError: false,
-            emailErrorText: "",
-            emailNotVerified: false
+const CustomCheckbox = styled(Checkbox)({
+    paddingBottom: 3,
+    paddingTop: 3
+})
+
+// const CustomFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+//     paddingTop: 3,
+//     color: "rgba(255, 255, 255, 0.7)"
+// }));
+
+
+export default function Login(props) {
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [emailNotVerified, setEmailNotVerified] = useState(false);
+    const [passwordError, setPasswordError] = useState(false)
+
+    const emailErrorMessage = "That Doesn't Look Like A Valid Email Address!"
+    const message = useSelector(state => state.auth.message);
+    const dispatch = useDispatch();
+    const classes = useStyles();
+    const navigate = useNavigate();
+
+    const handleChange = (event, _var) => {
+        switch (_var) {
+            case 'email':
+                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                const newEmailInput = event.target.value;
+
+                setEmail(newEmailInput);
+
+                if (newEmailInput && !re.test(String(newEmailInput).toLowerCase())) {
+                    setEmailError(true);
+                    break;
+                }
+
+                setEmailError(false);
+                break;
+            case 'password':
+                setPassword(event.target.value);
+
         }
-        this.handleChange = this.handleChange.bind(this)
-        this.handleClickShowPassword = this.handleClickShowPassword.bind(this)
-        this.handleLogin = this.handleLogin.bind(this)
     }
 
-    handleChange = (variable) => (event) => {
-        if (variable === 'email') {
-            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (event.target.value && !re.test(String(event.target.value).toLowerCase()))
-                this.setState({ emailError: true, emailErrorText: "Invalid Email Address!" })
-            else
-                this.setState({ emailError: false, emailErrorText: "" })
-        }
-        this.setState({
-            [variable]: event.target.value
-        })
+    const handleClickShowPassword = async () => {
+
+        setShowPassword((prevState) => !prevState)
+
     };
 
-    handleClickShowPassword = async () => {
-        this.setState({
-            showPassword: !this.state.showPassword
-        })
-    };
-
-    handleMouseDownPassword = async (event) => {
+    const handleMouseDownPassword = async (event) => {
         event.preventDefault();
     };
 
 
 
-    handleLogin = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
-        this.setState({
-            loading: true,
-        });
 
+        setLoading(true)
 
-        const { dispatch, history } = this.props;
-
-        if (!this.state.emailError && !this.state.passwordError) {
-            dispatch(login(this.state.email, this.state.password))
+        if (!emailError && !passwordError) {
+            dispatch(login(email, password))
                 .then(() => {
-                    history.push("/profile");
-                    this.setState({
-                        loading: false,
-                        messageType: "success",
-                        open: true
-                    });
+                    navigate("/profile");
+                    setLoading(false)
+                    setOpen(true)
+
                 })
                 .catch(() => {
-                    this.setState({
-                        loading: false,
-                        open: true
-                    });
-                    if (this.props.message.info === "Email not verified!") {
-                        this.setState({
-                            emailNotVerified: true,
-
-                        });
-                    }
+                    setLoading(false)
+                    setOpen(true)
+                    if (message.info === "Email not verified!")
+                        emailNotVerified(true)
                 });
         }
 
     }
 
-    handleCloseSnackBar = (event, reason) => {
+    const handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        this.setState({ open: false });
+        setOpen(false)
     };
 
 
-    render() {
-        const { classes } = this.props;
-        const { message } = this.props;
-        return (
-            <Fade in={true}>
-                <Grid
-                    container
-                    justify="center"
-                    alignItems='center'
-                    wrap='nowrap'
-                    direction='column'
-                    className={classes.rootPaper} >
-                    {this.state.emailNotVerified && <EmailNotVerified email={this.state.email} emailNotVerified={this.state.emailNotVerified} login={this.handleLogin} />}
-                    <div className={classes.innerDiv}>
-                        <Avatar className={classes.avatar}></Avatar>
-                        <form
-                            className={classes.formRoot}
-                            onSubmit={this.handleLogin}
-                            ref={(input) => { this.formLogin = input }}
-                        >
+    return (
+        <Fade in={true}>
+            <Grid
+                container
+                justifyContent="center"
+                alignItems='center'
+                wrap='nowrap'
+                direction='column'
+                className={classes.rootPaper} >
+                {emailNotVerified && <EmailNotVerified email={email} emailNotVerified={emailNotVerified} login={handleLogin} />}
+                <div className={classes.innerDiv}>
+                    <Avatar className={classes.avatar}></Avatar>
+                    <form
+                        className={classes.formRoot}
+                        onSubmit={handleLogin}
+                    // ref={(input) => { formLogin = input }}
+                    >
 
-                            <FormControl variant="filled" margin="normal" error={this.state.emailError} fullWidth>
-                                <InputLabel htmlFor="filled-adornment-password">Email</InputLabel>
-                                <FilledInput
-                                    id="filled-adornment-username"
-                                    type='email'
-                                    value={this.state.email}
-                                    onChange={this.handleChange('email')}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton >
-                                                <AccountCircle />
+                        <FormControl variant="filled" margin="normal" error={emailError} fullWidth>
+                            <InputLabel htmlFor="filled-adornment-password">Email</InputLabel>
+                            <FilledInput
+                                id="filled-adornment-username"
+                                type='email'
+                                value={email}
+                                onChange={(event) => handleChange(event, 'email')}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton size="large">
+                                            <AccountCircle />
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                autoFocus={true}
+                                required
+                            />
+                            <FormHelperText id="component-error-text" required>{emailError ? emailErrorMessage : ""}</FormHelperText>
+                        </FormControl>
+
+                        <FormControl variant="filled" margin="normal" error={passwordError} fullWidth>
+                            <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+                            <FilledInput
+                                id="filled-adornment-password"
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(event) => handleChange(event, 'password')}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <ReactIsCapsLockActive>
+                                            {active =>
+                                                active && <Tooltip title="Caps Lock On" className={classes.capsLock}>
+                                                    <KeyboardCapslock color='secondary' />
+                                                </Tooltip>}
+                                        </ReactIsCapsLockActive>
+                                        <Tooltip title={showPassword ? 'Hide Password' : 'Show Password'}>
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                size="large">
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
                                             </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    autoFocus={true}
-                                    required
-                                />
-                                <FormHelperText id="component-error-text" required>{this.state.emailErrorText}</FormHelperText>
-                            </FormControl>
+                                        </Tooltip>
+                                    </InputAdornment>
+                                }
 
-                            <FormControl variant="filled" margin="normal" error={this.state.passwordError} fullWidth>
-                                <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-                                <FilledInput
-                                    id="filled-adornment-password"
-                                    type={this.state.showPassword ? 'text' : 'password'}
-                                    value={this.state.password}
-                                    onChange={this.handleChange('password')}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <ReactIsCapsLockActive>
-                                                {active =>
-                                                    active && <Tooltip title="Caps Lock On" className={classes.capsLock}>
-                                                        <KeyboardCapslock color='secondary' />
-                                                    </Tooltip>}
-                                            </ReactIsCapsLockActive>
-                                            <Tooltip title={this.state.showPassword ? 'Hide Password' : 'Show Password'}>
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={this.handleClickShowPassword}
+                                required
+                            />
+                        </FormControl>
+                        {/* {Object.keys(message).map((item, index) => {
+                            return (<Zoom in={open} mountOnEnter unmountOnExit>
+                                <Alert className={classes.alert} severity={item}>{message[item]}</Alert>
+                            </Zoom>)
+                        })} */}
 
-                                                >
-                                                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-
-                                    required
-                                />
-                            </FormControl>
-                            {Object.keys(message).map((item, index) => {
-                                return (<Zoom in={this.state.open} mountOnEnter unmountOnExit>
-                                    <Alert className={classes.alert} severity={item}>{message[item]}</Alert>
-                                </Zoom>)
-                            })}
-
-                            <Button
-                                variant="contained"
-                                color='secondary'
-                                size="large"
-                                className={classes.button}
-                                type='submit'
-                            >
-                                LOG IN
-                    </Button>
-                        </form>
-                        <Register />
-                    </div>
-                    {/* <Snackbar anchorOrigin={{
+                        <Button
+                            variant="contained"
+                            color='secondary'
+                            size="large"
+                            className={classes.button}
+                            type='submit'
+                        >
+                            LOG IN
+                        </Button>
+                    </form>
+                    <Register />
+                </div>
+                {/* <Snackbar anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
-                    }} open={this.state.open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
-                        <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={this.state.messageType}>
+                    }} open={open} autoHideDuration={3000} onClose={this.handleCloseSnackBar}>
+                        <MuiAlert elevation={6} variant="filled" onClose={this.handleCloseSnackBar} severity={messageType}>
                             {message}
                         </MuiAlert>
                     </Snackbar> */}
 
 
 
-                </Grid>
-            </Fade>
-        )
-    }
+            </Grid>
+        </Fade>
+    );
+
 }
 
-function mapStateToProps(state) {
-    const { message } = state.message;
-    return {
-        message
-    };
-}
 
-const LoginWithRedux = connect(mapStateToProps)(Login);
-export default withStyles(useStyles)(LoginWithRedux)

@@ -10,12 +10,12 @@ html {
 }
 
 body {
-  height: 100%;
+  height: inherit;
   -moz-osx-font-smoothing: grayscale;
 }
 
 
-#root,.App {
+#root {
   height: inherit;
   display: flex;
   flex-direction: column;

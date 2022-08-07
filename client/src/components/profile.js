@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Paper, withStyles ,Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
+
+
+import withStyles from '@mui/styles/withStyles';
 
 
 const useStyles = {

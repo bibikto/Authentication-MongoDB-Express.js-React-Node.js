@@ -1,144 +1,125 @@
-import React, { Component } from 'react'
-import { withStyles, IconButton, Tooltip, Button, Grid, Slide, Icon, AppBar, Toolbar, Zoom } from '@material-ui/core'
-import { Brightness7, Brightness4, ArrowBack, HomeRounded, PersonRounded, AccountCircleRounded } from '@material-ui/icons/';
-import { connect } from "react-redux"
-import { withRouter } from "react-router";
-import UserMenu from './TopBar/userMenu'
-import XDButton from '../assets/XDButton'
+import {
+    AppBar, Button,
+    Grid, Icon, IconButton, Slide, Toolbar, Tooltip, Zoom, Stack
+} from '@mui/material';
+import { ArrowBack, Brightness4, Brightness7, HomeRounded, PersonRounded } from '@mui/icons-material/';
+import { makeStyles } from '@mui/styles/';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from 'react-router-dom';
+
+//Custom Impots
+import XDButton from '../assets/XDButton';
 import {
     themeSwitch
-} from "../redux/theme/theme.actions"
+} from "../redux/theme/theme.actions";
+import { useTheme } from '@mui/material/styles';
+import UserMenu from './TopBar/userMenu';
 
 // import Clock from './clock'
 
 
 
-const style = theme => ({
+const useStyles = makeStyles((theme) => ({
 
-    barSectionRight: {
-        display: 'flex',
-        gap: '5px'
-    },
     homeIcon: {
         width: '48px',
         height: '48px',
         overflowX: 'hidden',
         borderRadius: '15px',
-        backgroundColor: `${theme.palette.secondary[theme.palette.type]} !important`
+        backgroundColor: `${theme.palette.secondary[theme.palette.mode]} !important`
     }
-})
+}));
 
-export class TopBar extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            time: '00:00:00 AM',
-            interval: '',
-            currentPath: this.props.location.pathname,
-            prevPath: null,
-            homeIcon: 'default',
-            userMenuOpen: false
+export default function TopBar(props) {
+    const { loggedIn } = props;
+    const classes = useStyles();
+
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const theme = useTheme();
+
+    const [currentPath, setCurrentPath] = useState(location.pathname);
+    const [previousPath, setPreviousPath] = useState(null);
+    const [homeIcon, setHomeIcon] = useState('default')
+
+
+    useEffect(() => {
+        if (location.pathname !== currentPath) {
+            setPreviousPath(currentPath)
+            setCurrentPath(location.pathname)
         }
-    }
+    }, [location.pathname]);
 
-    static getDerivedStateFromProps(props, state) {
-        const currentPath = state.currentPath
-        if (props.location.pathname !== currentPath) {
-            return { prevPath: currentPath, currentPath: props.location.pathname }
-        }
-        return null
-    }
 
-    render() {
-        const { dispatch, history ,classes} = this.props;
+    return (
+        <AppBar color="transparent">
+            <Toolbar>
+                <Grid
+                    container
+                    justifyContent='space-between'
+                    wrap='nowrap'
+                >
+                    <Stack direction="row" spacing={1}>
 
-        return (
-            <AppBar color="transparent">
-                <Toolbar>
-                    <Grid
-                        container
-                        justify='space-between'
-                        wrap='nowrap'
-                    >
-                        <div className={classes.barSection}>
-
-                            <Zoom in={this.state.prevPath && this.state.prevPath !== "/login"} mountOnEnter unmountOnExit>
-                                <Tooltip title="Go Back">
-                                    <IconButton
-                                        onClick={() => history.goBack()}
-                                    >
-                                        <ArrowBack />
-                                    </IconButton>
-                                </Tooltip >
-                            </Zoom>
-                            <IconButton
-                                onClick={() => history.push('/')}
-                                className={classes.homeIcon}
-                                onMouseEnter={() => {
-                                    this.setState({
-                                        homeIcon: "hover"
-                                    })
-                                }}
-                                onMouseLeave={() => {
-                                    this.setState({
-                                        homeIcon: "default"
-                                    })
-                                }}
-                            >
-
-                                <Slide direction="right" in={this.state.homeIcon !== "default"} mountOnEnter unmountOnExit>
-                                    <HomeRounded />
-                                </Slide>
-                                <Slide direction="left" in={this.state.homeIcon !== "hover"} mountOnEnter unmountOnExit>
-                                    <Icon>
-                                        <XDButton />
-                                    </Icon>
-                                </Slide>
-                            </IconButton>
-
-                        </div>
-                        <div className={classes.barSectionRight}>
-                            <Tooltip title="Toggle theme">
-                                <IconButton
-                                    onClick={() => dispatch(themeSwitch())}
-                                >
-                                    {this.props.theme.palette.type === 'dark' ? <Brightness7 /> : <Brightness4 />}
+                        <Zoom in={previousPath && previousPath !== "/login"} mountOnEnter unmountOnExit>
+                            <Tooltip title="Go Back">
+                                <IconButton onClick={() => navigate(-1)} size="large">
+                                    <ArrowBack />
                                 </IconButton>
                             </Tooltip >
+                        </Zoom>
 
-                            
-                            <UserMenu loggedIn={this.props.loggedIn} dispatch={dispatch} />
+                        <IconButton
+                            onClick={() => navigate("/")}
+                            className={classes.homeIcon}
+                            onMouseEnter={() => { setHomeIcon("hover") }}
+                            onMouseLeave={() => { setHomeIcon("default") }}
+                            size="large">
 
-                            <Zoom in={!this.state.currentPath !== "/login" && !this.props.loggedIn} mountOnEnter unmountOnExit>
-                                <Button
-                                    variant="outlined"
-                                    color='secondary'
-                                    size="small"
-                                    className={classes.button}
-                                    startIcon={<PersonRounded />}
-                                    onClick={() => { history.push('/login') }} >
+                            <Slide direction="right" in={homeIcon !== "default"} mountOnEnter unmountOnExit>
+                                <HomeRounded />
+                            </Slide>
+                            <Slide direction="left" in={homeIcon !== "hover"} mountOnEnter unmountOnExit>
+                                <Icon>
+                                    <XDButton />
+                                </Icon>
+                            </Slide>
+                        </IconButton>
 
-                                    LOG IN
-                        </Button>
-                            </Zoom>
+                    </Stack >
+                    <Stack direction="row" spacing={1}>
+                        <Tooltip title="Toggle theme">
+                            <IconButton onClick={() => dispatch(themeSwitch())} size="large">
+                                {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+                            </IconButton>
+                        </Tooltip >
 
-                            {/* <Clock></Clock> */}
-                        </div>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
-        )
-    }
+
+                        <UserMenu loggedIn={loggedIn} dispatch={dispatch} />
+
+                        <Zoom in={!currentPath !== "/login" && !loggedIn} mountOnEnter unmountOnExit>
+
+                            <Button
+                                onClick={() => navigate("/login")}
+                                variant="outlined"
+                                color='secondary'
+                                size="small"
+                                className={classes.button}
+                                startIcon={<PersonRounded />}
+                            >
+                                LOG IN
+                            </Button>
+
+                        </Zoom>
+
+                        {/* <Clock></Clock> */}
+                    </Stack>
+                </Grid>
+            </Toolbar>
+        </AppBar >
+    );
+
 }
 
-const mapStateToProps = state => {
-    return {
-        theme: state.theme.theme,
-    }
-}
-
-
-
-const TopBarWithRouter = withRouter(TopBar);
-const TopBarWithStore = connect(mapStateToProps)(TopBarWithRouter)
-export default withStyles(style)(TopBarWithStore)

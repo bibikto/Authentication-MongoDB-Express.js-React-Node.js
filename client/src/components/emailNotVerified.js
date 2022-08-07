@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
-import { withStyles, Dialog, Backdrop, DialogTitle,  DialogContent, Typography, DialogActions, Button } from '@material-ui/core'
-import { ArrowForward } from '@material-ui/icons/';
+import {
+    Dialog,
+    Backdrop,
+    DialogTitle,
+    DialogContent,
+    Typography,
+    DialogActions,
+    Button,
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import { ArrowForward } from '@mui/icons-material/';
 const useStyles = {
     body: {
         minWidth: '350px',
